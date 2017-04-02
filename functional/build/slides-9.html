@@ -1,0 +1,62 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>DynamicProgrammer presentations</title>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="description" content="" />
+		<meta name="keywords" content="" />
+		<link rel="stylesheet" href="../../assets/css/style.css" type="text/css">
+		<link rel="stylesheet" href="../../assets/css/default.css" type="text/css">
+		<link rel="stylesheet" href="../../assets/css/agate.css" type="text/css">
+	</head>
+	<body>
+		<div class="vertical-center">
+      <div class="vertical-container">
+        <h2 id="bad-oo-class">Bad OO class</h2>
+<pre><code class="lang-javascript-c1"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Promo</span> </span>{
+
+  <span class="hljs-keyword">constructor</span>() {
+    <span class="hljs-keyword">this</span>._name = <span class="hljs-string">""</span>;
+    <span class="hljs-keyword">this</span>._code = <span class="hljs-string">""</span>;
+    <span class="hljs-keyword">this</span>._rules = [];
+  }
+
+  <span class="hljs-keyword">set</span> code(value) {
+    <span class="hljs-keyword">this</span>._code = value;
+  }
+
+  <span class="hljs-keyword">set</span> name(value) {
+    <span class="hljs-keyword">this</span>._name = value;
+  }
+
+  addRule(rule) {
+    <span class="hljs-keyword">this</span>._rules.push(rule);
+  }
+
+  toString() {
+    <span class="hljs-keyword">return</span> `${<span class="hljs-keyword">this</span>._code} ${<span class="hljs-keyword">this</span>._name} rules: ${<span class="hljs-keyword">this</span>._rules.length}`;
+  }
+}
+
+<span class="hljs-comment">// create a new promo</span>
+const p = new Promo();
+
+<span class="hljs-comment">// set the code and name</span>
+p.code = <span class="hljs-string">"123"</span>;
+p.name = <span class="hljs-string">"Promo"</span>
+
+<span class="hljs-comment">//check it out</span>
+p.toString();
+</code></pre>
+
+      </div>
+		</div>
+		<footer class="hidden">
+      <div class="b">
+        <button onclick="DynamicProg.codeRunner('.lang-javascript-c1')">RUN!</button>
+      </div>
+      <div class="cli"></div>
+		</footer>
+  <script src="../../assets/js/lib.js"></script>
+	</body>
+</html>
