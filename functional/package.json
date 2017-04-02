@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "build": "gulp build",
-    "start": "node ../node_modules/markdown-to-slides ./slides.md -j ../js/lib.js -s ../styles/style.css -o ./index.html",
+    "start": "http-serve ../ -p 3000",
     "dev": "gulp watch"
   },
   "devDependencies": {
@@ -17,6 +17,7 @@
     "gulp-split-files": "^1.2.1",
     "gulp-watch": "^4.3.11",
     "highlight.js": "^9.10.0",
+    "http-serve": "^1.0.1",
     "marked": "^0.3.6"
   }
 }

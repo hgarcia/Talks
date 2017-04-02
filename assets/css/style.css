@@ -1,10 +1,10 @@
-@import url('https://fonts.googleapis.com/css?family=Avenir:400,700');
+@import url('//fonts.googleapis.com/css?family=Roboto+Condensed:300');
 html {
   height: 100%;
 }
 body {
-  font-family: 'Avenir', sans-serif;
-  font-size: 1.5em;
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: 2em;
   background-color: #333;
   color: #cdcdcd;
   height: 90%;
@@ -68,6 +68,12 @@ pre {
   display: block;
   max-height: 52%;
   overflow: auto;
+  white-space: pre-wrap;
+}
+.notes {
+  display: block;
+  background-color: #cdcdcd;
+  color: #111;
 }
 @keyframes blink-animation {
   to {
