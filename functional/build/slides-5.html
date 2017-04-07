@@ -12,11 +12,34 @@
 	<body>
 		<div class="vertical-center">
       <div class="vertical-container">
-        <h1 id="segregaci-n-de-span-class-highlight-i-span-nterfaces">segregación de <span class="highlight">I</span>nterfaces</h1>
-<h4 id="interface-segregation-principle">interface segregation principle</h4>
-<blockquote>
-<p>I: Interfaces que son largas y complejas deben separarse en mas chicas (ex: GOD)</p>
-</blockquote>
+        <pre><code class="lang-c#"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PaymentProviderPayloadAdapterFactory</span></span>
+</code></pre>
+<pre><code class="lang-c#"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PaymentProviderFactory</span></span>
+</code></pre>
+<pre><code class="lang-c#"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PaymentRequestValidatorFactory</span></span>
+</code></pre>
+<pre><code class="lang-c#"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AuthPaymentRequestValidator</span> : <span class="hljs-type">IPaymentRequestValidator</span></span>
+</code></pre>
+<pre><code class="lang-c#"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PPPaymentRequestValidator</span> : <span class="hljs-type">IPaymentRequestValidator</span></span>
+</code></pre>
+<pre><code class="lang-c#"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AuthPaymentRequest</span> : <span class="hljs-type">IPaymentRequest</span></span>
+</code></pre>
+<pre><code class="lang-c#"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PPPaymentRequest</span> : <span class="hljs-type">IPaymentRequest</span></span>
+</code></pre>
+<pre><code class="lang-c#"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AuthPayloadAdapter</span> : <span class="hljs-type">IPaymentProviderPayloadAdapter</span></span>
+</code></pre>
+<pre><code class="lang-c#"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PPPayloadAdapter</span> : <span class="hljs-type">IPaymentProviderPayloadAdapter</span></span>
+</code></pre>
+<pre><code class="lang-c#"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AuthPaymentProvider</span> : <span class="hljs-type">IPaymentProvider</span></span>
+</code></pre>
+<pre><code class="lang-c#"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PPPaymentProvider</span> : <span class="hljs-type">IPaymentProvider</span></span>
+</code></pre>
+<pre><code class="lang-c#"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AuthPaymentRequest</span></span>
+</code></pre>
+<pre><code class="lang-c#"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PPPaymentRequest</span></span>
+</code></pre>
+<pre><code class="lang-c#"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PaymentResponse</span> : <span class="hljs-type">IPaymentResponse</span></span>
+</code></pre>
 
       </div>
 		</div>

@@ -12,9 +12,16 @@
 	<body>
 		<div class="vertical-center">
       <div class="vertical-container">
-        <h1 id="qu-tiene-esto-que-ver-con-span-class-highlight-fp-span-">Qué tiene esto que ver con <span class="highlight">FP</span>?</h1>
+        <pre><code class="lang-elixir"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">do_payment</span><span class="hljs-params">(args)</span></span> <span class="hljs-keyword">do</span>
+  validate_payment(args)
+    <span class="hljs-params">|&gt; prepare_payment_request
+    |</span>&gt; send_payment
+    <span class="hljs-params">|&gt; prepare_response
+<span class="hljs-keyword">end</span></span>
+</code></pre>
 <blockquote>
-<p>El argumento es que estos principios que consideramos buenos para desarrollar software en OO y que tenemos que &quot;pensar&quot; en implementarlos, ocurren naturalmente cuando empezamos a pensar de manera funcional.</p>
+<p>Donde estan las factories?</p>
+<p>Donde esta el error handler!!!!</p>
 </blockquote>
 
       </div>

@@ -1,38 +1,16 @@
-## Bad OO class
+```elixir
 
-```javascript-c1
-class Promo {
+//there is an error, so we just send it up the pipe.
+def prepare_payment_request({:error, _, error}) do {:error, error}
+def prepare_payment_request({:ok, :pp, payment}) do
+  // code for PP
+end
 
-  constructor() {
-    this._name = "";
-    this._code = "";
-    this._rules = [];
-  }
+def prepare_payment_request({:ok, :an, payment}) do
+  // code for AN
+end
 
-  set code(value) {
-    this._code = value;
-  }
-
-  set name(value) {
-    this._name = value;
-  }
-
-  addRule(rule) {
-    this._rules.push(rule);
-  }
-
-  toString() {
-    return `${this._code} ${this._name} rules: ${this._rules.length}`;
-  }
-}
-
-// create a new promo
-const p = new Promo();
-
-// set the code and name
-p.code = "123";
-p.name = "Promo"
-
-//check it out
-p.toString();
+def prepare_payment_request({:ok, _, payment}) do
+  // code for ???
+end
 ```

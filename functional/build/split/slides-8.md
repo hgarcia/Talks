@@ -1,9 +1,19 @@
-# Promos
+```elixir
 
-* Cada promo tiene un codigo unico
-* La misma promo (codigo) tiene diferentes reglas
-* Las reglas son chequeadas contra un ticket
-* La primera regla que encontramos es la que usamos
+//there is an error, so we just send it up the pipe.
+def prepare_payment_request({:error, error}) do {:error, error}
 
+def prepare_payment_request({:ok, payment}) when payment.type === "PP" do
+  // code for PP
+end
 
-> Nuestro sistema de venta de tickets tiene un sistema de promos que sigue las reglas siguientes.
+def prepare_payment_request({:ok, payment}) when payment.type === "AN" do
+  // code for AN
+end
+
+def prepare_payment_request({:ok, payment}) do
+  // code for ???
+end
+```
+
+> Much elegant

@@ -12,41 +12,20 @@
 	<body>
 		<div class="vertical-center">
       <div class="vertical-container">
-        <h2 id="bad-oo-class">Bad OO class</h2>
-<pre><code class="lang-javascript-c1"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Promo</span> </span>{
+        <pre><code class="lang-elixir">
+<span class="hljs-comment">//there is an error, so we just send it up the pipe.</span>
+<span class="hljs-selector-tag">def</span> <span class="hljs-selector-tag">prepare_payment_request</span>({<span class="hljs-selector-pseudo">:error</span>, <span class="hljs-selector-tag">_</span>, <span class="hljs-selector-tag">error</span>}) <span class="hljs-selector-tag">do</span> {<span class="hljs-selector-pseudo">:error</span>, <span class="hljs-selector-tag">error</span>}
+<span class="hljs-selector-tag">def</span> <span class="hljs-selector-tag">prepare_payment_request</span>({<span class="hljs-selector-pseudo">:ok</span>, <span class="hljs-selector-pseudo">:pp</span>, <span class="hljs-selector-tag">payment</span>}) <span class="hljs-selector-tag">do</span>
+  <span class="hljs-comment">// code for PP</span>
+<span class="hljs-selector-tag">end</span>
 
-  <span class="hljs-keyword">constructor</span>() {
-    <span class="hljs-keyword">this</span>._name = <span class="hljs-string">""</span>;
-    <span class="hljs-keyword">this</span>._code = <span class="hljs-string">""</span>;
-    <span class="hljs-keyword">this</span>._rules = [];
-  }
+<span class="hljs-selector-tag">def</span> <span class="hljs-selector-tag">prepare_payment_request</span>({<span class="hljs-selector-pseudo">:ok</span>, <span class="hljs-selector-pseudo">:an</span>, <span class="hljs-selector-tag">payment</span>}) <span class="hljs-selector-tag">do</span>
+  <span class="hljs-comment">// code for AN</span>
+<span class="hljs-selector-tag">end</span>
 
-  <span class="hljs-keyword">set</span> code(value) {
-    <span class="hljs-keyword">this</span>._code = value;
-  }
-
-  <span class="hljs-keyword">set</span> name(value) {
-    <span class="hljs-keyword">this</span>._name = value;
-  }
-
-  addRule(rule) {
-    <span class="hljs-keyword">this</span>._rules.push(rule);
-  }
-
-  toString() {
-    <span class="hljs-keyword">return</span> `${<span class="hljs-keyword">this</span>._code} ${<span class="hljs-keyword">this</span>._name} rules: ${<span class="hljs-keyword">this</span>._rules.length}`;
-  }
-}
-
-<span class="hljs-comment">// create a new promo</span>
-const p = new Promo();
-
-<span class="hljs-comment">// set the code and name</span>
-p.code = <span class="hljs-string">"123"</span>;
-p.name = <span class="hljs-string">"Promo"</span>
-
-<span class="hljs-comment">//check it out</span>
-p.toString();
+<span class="hljs-selector-tag">def</span> <span class="hljs-selector-tag">prepare_payment_request</span>({<span class="hljs-selector-pseudo">:ok</span>, <span class="hljs-selector-tag">_</span>, <span class="hljs-selector-tag">payment</span>}) <span class="hljs-selector-tag">do</span>
+  <span class="hljs-comment">// code for ???</span>
+<span class="hljs-selector-tag">end</span>
 </code></pre>
 
       </div>

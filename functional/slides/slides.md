@@ -1,106 +1,237 @@
-press C to clone and press P for presenter notes
-
-/*split*/
-# SOLID OO <span class="highlight">|></span> FUNCTIONAL
-
-
->- SOLID nos lleva a pequeñas clases con uno o dos metodos.
-- Separación de data y comportamiento.
-- Composición en lugar de herencia.
-- Mas facil de mantener, extender y testear.
-
-/*split*/
-# una <span class="highlight">S</span>ola responsabilidad
-#### single responsibility principle
-
-
->S: Evitar classes GOD (or DIOSES) ex: Manager clase.
-expand
-
-/*split*/
-# abiert<span class="highlight">O</span>/cerrado
-#### open/close principle
-
-> O: Abierto para extender/cerrado para modificar.
+# OO <span class="highlight">|></span> FP
 
 /*split*/
 
-  # substitución de <span class="highlight">L</span>iskovs
-  #### liskovs substitution principle
-
-
-> L: Un metodo que acepta una clase A debe trabajar con subclases de A
+Presentation original y cambio de idea.
+List of presentations and blog post about OO to Funtional
 
 /*split*/
 
-  # segregación de <span class="highlight">I</span>nterfaces
-  #### interface segregation principle
+# Porqué?
 
+> Aplicando solid y refactoreando el codigo termina con clases pequeñas con uno o dos metodos a lo sumo.
 
-> I: Interfaces que son largas y complejas deben separarse en mas chicas (ex: GOD)
+> 90% de las aplicaciones que hacemos solo procesan y transforman data.
 
-/*split*/
+> FP es perfecto para eso
 
-  # inversión de <span class="highlight">D</span>ependencias
-  #### dependency inversion principle  
+> Codigo mas simple
 
+> Codigo mas facil de leer
 
-> D: Dependemos en abstracciones y no en clases concreatas, o sea que esperamos que la dependencias implemente una interface X... Por extension nunca un 'new' adentro de una clase
-
-/*split*/
-# Qué tiene esto que ver con <span class="highlight">FP</span>?
-
-> El argumento es que estos principios que consideramos buenos para desarrollar software en OO y que tenemos que "pensar" en implementarlos, ocurren naturalmente cuando empezamos a pensar de manera funcional.
+> Codigo mas facil de mantener
 
 /*split*/
 
-# Promos
+# Ejemplo 1: Proveedores de pagos
 
-* Cada promo tiene un codigo unico
-* La misma promo (codigo) tiene diferentes reglas
-* Las reglas son chequeadas contra un ticket
-* La primera regla que encontramos es la que usamos
+> Transformar la data que uno recibe al request necesario para cada proveedor.
+> La respuesta viene y con multiple respuestas posibles (pattern matching).
+> Transformar las posibles respuestas en un formato unico para que la aplication puede mostrar y entender.
 
+> OO Adapters, encoders, decoders.
 
-> Nuestro sistema de venta de tickets tiene un sistema de promos que sigue las reglas siguientes.
+> FP, functions, pipelines, pattern matching.
 
 /*split*/
 
-## Bad OO class
+```csharp
 
-```javascript-c1
-class Promo {
+//Implements IPayment
+ // get request from the UI
+  var paymentRequestValidator = PaymentRequestValidatorFactory.Create(request.body);
 
-  constructor() {
-    this._name = "";
-    this._code = "";
-    this._rules = [];
-  }
+  var paymentRequest = paymentRequestValidator.validate();
 
-  set code(value) {
-    this._code = value;
-  }
+  var paymentProviderPayloadAdapter = PaymentProviderPayloadAdapterFactory.Create(paymentRequest.type);
 
-  set name(value) {
-    this._name = value;
-  }
+  var paymentProvider = PaymentProviderFactory.Create(paymentRequest, config); //Implements IProviderFactory
 
-  addRule(rule) {
-    this._rules.push(rule);
-  }
+  var paymentProviderResponse = paymentProvider.Pay(paymentProviderPayloadAdapter.adaptRequest(paymentRequest));
 
-  toString() {
-    return `${this._code} ${this._name} rules: ${this._rules.length}`;
-  }
-}
-
-// create a new promo
-const p = new Promo();
-
-// set the code and name
-p.code = "123";
-p.name = "Promo"
-
-//check it out
-p.toString();
+  var adaptedResponse = paymentProviderPayloadAdapter.adaptRequest(paymentProviderResponse);
+  // send response up to the user
 ```
+
+> Look at all the mappings we are doing
+
+> And we are not even handling any errors here.
+
+/*split*/
+```c#
+public static class PaymentProviderPayloadAdapterFactory
+```
+```c#
+public static class PaymentProviderFactory
+```
+```c#
+public static class PaymentRequestValidatorFactory
+```
+```c#
+public class AuthPaymentRequestValidator : IPaymentRequestValidator
+```
+```c#
+public class PPPaymentRequestValidator : IPaymentRequestValidator
+```
+```c#
+public class AuthPaymentRequest : IPaymentRequest
+```
+```c#
+public class PPPaymentRequest : IPaymentRequest
+```
+```c#
+public class AuthPayloadAdapter : IPaymentProviderPayloadAdapter
+```
+```c#
+public class PPPayloadAdapter : IPaymentProviderPayloadAdapter
+```
+```c#
+public class AuthPaymentProvider : IPaymentProvider
+```
+```c#
+public class PPPaymentProvider : IPaymentProvider
+```
+```c#
+public class AuthPaymentRequest
+```
+```c#
+public class PPPaymentRequest
+```
+```c#
+public class PaymentResponse : IPaymentResponse
+```
+
+/*split*/
+
+```csharp
+//Implements IPayment
+try {
+  var paymentRequestValidator = PaymentRequestValidatorFactory.Create(request.body);
+
+  var paymentRequest = paymentRequestValidator.validate();
+
+  var paymentProviderPayloadAdapter = PaymentProviderPayloadAdapterFactory.Create(paymentRequest.type);
+
+  var paymentProvider = PaymentProviderFactory.Create(paymentRequest, config); //Implements IProviderFactory
+
+  var paymentProviderResponse = paymentProvider.Pay(paymentProviderPayloadAdapter.adaptRequest(paymentRequest));
+
+  var adaptedResponse = paymentProviderPayloadAdapter.adaptRequest(paymentProviderResponse);
+
+} catch (ConnectException e) {
+
+} catch (OutOfFundsException e) {
+
+} catch (ExpiredCCException e) {
+
+} catch (AvsException e) {
+
+} catch (AddressMissMatchException e) {
+
+} catch (InvalidCCForAccountException e) {
+
+} catch (InvalidCredentialsException e) {
+} catch (Exception e) {
+  // Handle unknown Exception
+} finally {
+  // Do some clean up here
+}
+```
+
+> Yes this code can be made a bit cleaner
+
+> Not all exceptions should be handle here and not all code live at the same level.
+
+/*split*/
+
+```elixir
+def do_payment(args) do
+  validate_payment(args)
+    |> prepare_payment_request
+    |> send_payment
+    |> prepare_response
+end
+```
+
+> Donde estan las factories?
+
+> Donde esta el error handler!!!!
+
+/*split*/
+
+```elixir
+
+//there is an error, so we just send it up the pipe.
+def prepare_payment_request({:error, error}) do {:error, error}
+
+def prepare_payment_request({:ok, payment}) when payment.type === "PP" do
+  // code for PP
+end
+
+def prepare_payment_request({:ok, payment}) when payment.type === "AN" do
+  // code for AN
+end
+
+def prepare_payment_request({:ok, payment}) do
+  // code for ???
+end
+```
+
+> Much elegant
+
+/*split*/
+
+```elixir
+
+//there is an error, so we just send it up the pipe.
+def prepare_payment_request({:error, _, error}) do {:error, error}
+def prepare_payment_request({:ok, :pp, payment}) do
+  // code for PP
+end
+
+def prepare_payment_request({:ok, :an, payment}) do
+  // code for AN
+end
+
+def prepare_payment_request({:ok, _, payment}) do
+  // code for ???
+end
+```
+
+/*split*/
+
+```elixir
+require OK
+
+def do_payment(args) do
+  OK.with do
+    cart <- create_payment(args)
+    payment <- prepare_payment_request(cart)
+    response <- send_payment(payment)
+    result <- prepare_response(response)
+    OK.success result
+  else
+    :connection_error -> OK.failure :problems_connecting
+    :out_of_funds -> OK.failure :run_out_of_funds
+    :expired -> OK.failure :cc_expired
+    :avs -> OK.failure :address_verification_problems
+    :address_mismatch -> OK.failure :address_problems
+    //...
+    :error -> OK.failure :error
+  end
+end
+```
+
+> Even if you need to catch errors and match or whatever you can ether use the Elixir with or the library OK
+
+/*split*/
+
+# Ejemplo 2: db mapping
+
+/*split*/
+
+# Ejemplo 3: streams
+
+/*split*/
+
+# Gracias!

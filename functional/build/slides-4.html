@@ -12,10 +12,25 @@
 	<body>
 		<div class="vertical-center">
       <div class="vertical-container">
-        <h1 id="substituci-n-de-span-class-highlight-l-span-iskovs">substitución de <span class="highlight">L</span>iskovs</h1>
-<h4 id="liskovs-substitution-principle">liskovs substitution principle</h4>
+        <pre><code class="lang-csharp">
+<span class="hljs-comment">//Implements IPayment</span>
+ <span class="hljs-comment">// get request from the UI</span>
+  <span class="hljs-keyword">var</span> paymentRequestValidator = PaymentRequestValidatorFactory.Create(request.body);
+
+  <span class="hljs-keyword">var</span> paymentRequest = paymentRequestValidator.validate();
+
+  <span class="hljs-keyword">var</span> paymentProviderPayloadAdapter = PaymentProviderPayloadAdapterFactory.Create(paymentRequest.<span class="hljs-keyword">type</span>);
+
+  <span class="hljs-keyword">var</span> paymentProvider = PaymentProviderFactory.Create(paymentRequest, config); <span class="hljs-comment">//Implements IProviderFactory</span>
+
+  <span class="hljs-keyword">var</span> paymentProviderResponse = paymentProvider.Pay(paymentProviderPayloadAdapter.adaptRequest(paymentRequest));
+
+  <span class="hljs-keyword">var</span> adaptedResponse = paymentProviderPayloadAdapter.adaptRequest(paymentProviderResponse);
+  <span class="hljs-comment">// send response up to the user</span>
+</code></pre>
 <blockquote>
-<p>L: Un metodo que acepta una clase A debe trabajar con subclases de A</p>
+<p>Look at all the mappings we are doing</p>
+<p>And we are not even handling any errors here.</p>
 </blockquote>
 
       </div>

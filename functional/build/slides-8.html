@@ -12,15 +12,24 @@
 	<body>
 		<div class="vertical-center">
       <div class="vertical-container">
-        <h1 id="promos">Promos</h1>
-<ul>
-<li>Cada promo tiene un codigo unico</li>
-<li>La misma promo (codigo) tiene diferentes reglas</li>
-<li>Las reglas son chequeadas contra un ticket</li>
-<li>La primera regla que encontramos es la que usamos</li>
-</ul>
+        <pre><code class="lang-elixir">
+<span class="hljs-comment">//there is an error, so we just send it up the pipe.</span>
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">prepare_payment_request</span></span>({:error, error}) do {:error, error}
+
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">prepare_payment_request</span></span>({:ok, payment}) when payment.<span class="hljs-keyword">type</span> === <span class="hljs-string">"PP"</span> do
+  <span class="hljs-comment">// code for PP</span>
+end
+
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">prepare_payment_request</span></span>({:ok, payment}) when payment.<span class="hljs-keyword">type</span> === <span class="hljs-string">"AN"</span> do
+  <span class="hljs-comment">// code for AN</span>
+end
+
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">prepare_payment_request</span></span>({:ok, payment}) do
+  <span class="hljs-comment">// code for ???</span>
+end
+</code></pre>
 <blockquote>
-<p>Nuestro sistema de venta de tickets tiene un sistema de promos que sigue las reglas siguientes.</p>
+<p>Much elegant</p>
 </blockquote>
 
       </div>

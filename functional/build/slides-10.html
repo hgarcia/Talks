@@ -1,0 +1,49 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>DynamicProgrammer presentations</title>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="description" content="" />
+		<meta name="keywords" content="" />
+		<link rel="stylesheet" href="../../assets/css/style.css" type="text/css">
+		<link rel="stylesheet" href="../../assets/css/default.css" type="text/css">
+		<link rel="stylesheet" href="../../assets/css/agate.css" type="text/css">
+	</head>
+	<body>
+		<div class="vertical-center">
+      <div class="vertical-container">
+        <pre><code class="lang-elixir">require OK
+
+def do_payment(args) <span class="hljs-keyword">do</span>
+  OK.<span class="hljs-keyword">with</span> <span class="hljs-keyword">do</span>
+    cart &lt;- create_payment(args)
+    payment &lt;- prepare_payment_request(cart)
+    response &lt;- send_payment(payment)
+    result &lt;- prepare_response(response)
+    OK.success result
+  <span class="hljs-keyword">else</span>
+    :<span class="hljs-function"><span class="hljs-title">connection_error</span> -&gt;</span> OK.failure :problems_connecting
+    :<span class="hljs-function"><span class="hljs-title">out_of_funds</span> -&gt;</span> OK.failure :run_out_of_funds
+    :<span class="hljs-function"><span class="hljs-title">expired</span> -&gt;</span> OK.failure :cc_expired
+    :<span class="hljs-function"><span class="hljs-title">avs</span> -&gt;</span> OK.failure :address_verification_problems
+    :<span class="hljs-function"><span class="hljs-title">address_mismatch</span> -&gt;</span> OK.failure :address_problems
+    <span class="hljs-comment">//...</span>
+    :<span class="hljs-function"><span class="hljs-title">error</span> -&gt;</span> OK.failure :error
+  end
+end
+</code></pre>
+<blockquote>
+<p>Even if you need to catch errors and match or whatever you can ether use the Elixir with or the library OK</p>
+</blockquote>
+
+      </div>
+		</div>
+		<footer class="hidden">
+      <div class="b">
+        <button onclick="DynamicProg.codeRunner('.lang-javascript-c1')">RUN!</button>
+      </div>
+      <div class="cli"></div>
+		</footer>
+  <script src="../../assets/js/lib.js"></script>
+	</body>
+</html>
