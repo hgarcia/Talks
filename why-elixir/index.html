@@ -1,0 +1,503 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>reveal.js</title>
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/black.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- custom styles -->
+		<link rel="stylesheet" href="css/style.css">
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+
+				<section>
+          <section>
+            <h1>
+              OO <span class="highlight">|></span> FP
+            </h1>
+            <h3>3 casos prácticos por los que una empresa piensa migrar a Elixir</h3>
+          </section>
+				</section>
+
+        <section>
+          <section>
+            <p>Hernan García</p>
+            <p><span class="highlight">@</span>theprogrammer</p>
+            <p>https://dynamicprogrammer.com</p>
+          </section>
+
+          <section>
+            <ul>
+              <li>Periodista convertido en technologist.</li>
+              <li>Practicante de Agile XP TDD.</li>
+              <li>20+ años desarrollando productos.</li>
+              <li>Ex Thoughtworker (aprendí un montón)</li>
+              <li>CTO <span class="highlight">&</span> socio fundador de Betterez.</li>
+            </ul>
+          </section>
+        </section>
+
+        <section>
+          <section>
+              <h5>Draft 1</h5>
+              <h3>SOLID <span class="highlight">|></span> Refactoring <span class="highlight">|></span> FP</h3>
+              <aside class="notes">
+                Aplicando solid y refactoreando el codigo termina con clases pequeñas con uno o dos metodos a lo sumo.
+                Quedamos cerca de FP pero sin los benficios de FP.
+              </aside>
+          </section>
+        </section>
+
+        <section>
+          <section>
+              <h1>Porqué cambiar<span class="highlight">?</span></h1>
+
+              <aside class="notes">
+                <p>Pattern matching.</p>
+                <p>Inmutability</p>
+                <p>Function composition</p>
+                <p>Simpler code to maintain</p>
+
+                <p>OTP (Erlang Elixir)</p>
+              </aside>
+            </section>
+
+        </section>
+
+        <section>
+          <section>
+            <h2>Caso <spen class="highlight">1:</spen> Pattern matching</h2>
+            <p>O como macheo de patrones puede hacer tu codigo una obra de arte</p>
+            <small>Ejemplo: manejando multiple formas y procesadores de pago.</small>
+
+            <aside class="notes">
+              Validar user input.<br/>
+              Transformar para cada processador de pago.<br/>
+              Convertir la respuesta de cada processador a un formato comun en la aplication<br/>
+              Manejo de errores<br/>
+            </aside>
+
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h3>O<span class="highlight">O</span>P</h3>
+<pre><code>
+public IPaymentResponse doPayment(IRequest request)
+{
+  var paymentRequestValidator = PaymentRequestValidatorFactory.Create(request.body);
+  var paymentRequest = paymentRequestValidator.validate();
+  var paymentProviderPayloadAdapter = PaymentProviderPayloadAdapterFactory.Create(paymentRequest.type);
+  var paymentProvider = PaymentProviderFactory.Create(paymentRequest, config);
+  var paymentProviderResponse = paymentProvider.pay(paymentProviderPayloadAdapter.adaptRequest(paymentRequest));
+  var adaptedResponse = paymentProviderPayloadAdapter.adaptResponse(paymentProviderResponse);
+  return adaptedResponse;
+}
+</code></pre>
+
+              <aside class="notes">
+                Este codigo puede estar en un servicio, un entry point de la aplication o (peor) un controller si es
+                una web application.
+              </aside>
+          </section>
+
+          <section>
+            <h3>Eli<span class="highlight">x</span>ir</h3>
+            <pre><code class="data-trim">
+def do_payment(args) do
+  validate_payment(args)
+    |> prepare_payment_request
+    |> send_payment
+    |> prepare_response
+end
+              </code></pre>
+              <aside class="notes">
+                Donde estan las factories? (Pattern matching)
+              </aside>
+          </section>
+
+          <section>
+            <pre><code>
+public IPaymentResponse doPayment(IRequest request)
+{
+  try {
+    var paymentRequestValidator = PaymentRequestValidatorFactory.Create(request.body);
+    var paymentRequest = paymentRequestValidator.validate();
+    var paymentProviderPayloadAdapter = PaymentProviderPayloadAdapterFactory.Create(paymentRequest.type);
+    var paymentProvider = PaymentProviderFactory.Create(paymentRequest, config);
+    var paymentProviderResponse = paymentProvider.pay(paymentProviderPayloadAdapter.adaptRequest(paymentRequest));
+    var adaptedResponse = paymentProviderPayloadAdapter.adaptResponse(paymentProviderResponse);
+    return adaptedResponse;
+  } catch (ConnectException e) {
+
+  } catch (OutOfFundsException e) {
+
+  } catch (ExpiredCCException e) {
+
+  } catch (AvsException e) {
+
+  } catch (AddressMissMatchException e) {
+
+  } catch (InvalidCCForAccountException e) {
+
+  } catch (InvalidCredentialsException e) {
+  } catch (Exception e) {
+    // Handle unknown Exception
+  } finally {
+    // Do some clean up here
+  }
+}
+              </code></pre>
+
+            <aside class="notes">
+            </aside>
+          </section>
+
+          <section>
+            <pre><code>
+require OK
+
+def do_payment(args) do
+  OK.with do
+    cart <- create_payment(args)
+    payment <- prepare_payment_request(cart)
+    response <- send_payment(payment)
+    result <- prepare_response(response)
+    OK.success result
+  else
+    :connection_error -> OK.failure :problems_connecting
+    :out_of_funds -> OK.failure :run_out_of_funds
+    :expired -> OK.failure :cc_expired
+    :avs -> OK.failure :address_verification_problems
+    :address_mismatch -> OK.failure :address_problems
+    //...
+    :error -> OK.failure :error
+  end
+end
+              </code></pre>
+          </section>
+
+          <section>
+<h5>O<span class="highlight">O</span>P</h5>
+<pre class="fragment"><code data-trim>
+var paymentRequestValidator =
+  PaymentRequestValidatorFactory
+  .Create(request.body);
+</code></pre>
+
+<pre class="fragment"><code data-trim>
+var paymentRequest = paymentRequestValidator.validate();
+</code></pre>
+
+<pre class="fragment"><code data-trim>
+var paymentProviderPayloadAdapter =
+  PaymentProviderPayloadAdapterFactory
+  .Create(paymentRequest.type);
+</code></pre>
+
+<pre class="fragment"><code data-trim>
+var paymentProvider =
+  PaymentProviderFactory
+  .Create(paymentRequest, config);
+</code></pre>
+
+<pre class="fragment"><code data-trim>
+var paymentProviderResponse =
+  paymentProvider
+  .pay(paymentProviderPayloadAdapter
+    .adaptRequest(paymentRequest));
+</code></pre>
+
+<pre class="fragment"><code data-trim>
+var adaptedResponse =
+  paymentProviderPayloadAdapter
+  .adaptResponse(paymentProviderResponse);
+</code></pre>
+          </section>
+
+          <section>
+<h5>Eli<span class="highlight">x</span>ir</h5>
+<pre class="fragment"><code class="data-trim">
+  validate_payment(args)
+</code></pre>
+<pre class="fragment"><code class="data-trim">
+    |> prepare_payment_request
+</code></pre>
+<pre class="fragment"><code class="data-trim">
+    |> send_payment
+</code></pre>
+<pre class="fragment"><code class="data-trim">
+    |> prepare_response
+</code></pre>
+          </section>
+
+          <section>
+            <pre><code class="data-trim">
+public static class PaymentProviderPayloadAdapterFactory
+public static class PaymentProviderFactory
+public static class PaymentRequestValidatorFactory
+public class AuthPaymentRequestValidator : IPaymentRequestValidator
+public class PPPaymentRequestValidator : IPaymentRequestValidator
+public class AuthPaymentRequest : IPaymentRequest
+public class PPPaymentRequest : IPaymentRequest
+public class AuthPayloadAdapter : IPaymentProviderPayloadAdapter
+public class PPPayloadAdapter : IPaymentProviderPayloadAdapter
+public class AuthPaymentProvider : IPaymentProvider
+public class PPPaymentProvider : IPaymentProvider
+public class AuthPaymentRequest
+public class PPPaymentRequest
+public class PaymentResponse : IPaymentResponse
+            </code></pre>
+
+          <aside class="notes">
+            Si tenemos en cuenta que tenemos un file por class y por interface tenemos aca nomas 23 files...
+
+          </aside>
+          </section>
+
+        <section>
+          <pre><code>
+defmodule PaymentValidations
+defmodule PaymentRequests
+defmodule PaymentProviders
+defmodule PaymentResponse
+            </code></pre>
+          <aside class="notes">
+            Esto no es 100% correcto, probablemente una quiera crear un module por payment provider en lugar de un module para todos.
+            Pero de cualquier manera estamos hablando de 4 a 10 files en total a lo sumo.
+            Contra 23.
+          </aside>
+        </section>
+
+          <section>
+            <pre><code>
+public class PaymentProviderPayloadAdapterFactory {
+  static public IPaymentProviderPayloadAdapter Create(string type) {
+        IPaymentProviderPayloadAdapter Adapter = null;
+        switch (type)
+        {
+            case "PP:
+                Adapter = new PPPayloadAdapter();
+                break;
+            case "AN":
+                Adapter = new AuthPayloadAdapter();
+                break;
+            default:
+                Adapter = new NullPayloadAdapter();
+                break;
+        }
+        return Adapter;
+  }
+}
+              </code></pre>
+          </section>
+
+          <section>
+            <pre><code class="data-trim">
+def prepare_payment_request({:error, error}) do {:error, error}
+
+def prepare_payment_request({:ok, payment}) when payment.type === "PP" do
+  // code for PP
+end
+
+def prepare_payment_request({:ok, payment}) when payment.type === "AN" do
+  // code for AN
+end
+
+def prepare_payment_request({:ok, payment}) do
+  // code for ???
+end
+              </code></pre>
+          </section>
+
+
+          <section>
+            <pre><code>
+def prepare_payment_request({:error, _, error}) do {:error, error}
+def prepare_payment_request({:ok, :pp, payment}) do
+  // code for PP
+end
+
+def prepare_payment_request({:ok, :an, payment}) do
+  // code for AN
+end
+
+def prepare_payment_request({:ok, _, payment}) do
+  // code for ???
+end
+              </code></pre>
+          </section>
+
+        </section>
+
+        <section>
+          <section>
+            <h2>Caso <spen class="highlight">2:</spen> inmutability</h2>
+            <p>Como data inmutable nos protege de nosotros mismos</p>
+
+            <aside class="notes">
+              En OO, dificil.<br/>
+              Depende del lenguaje, no todos tienen<br/>
+              Depende en general del desarrollador<br/>
+              Data structures?<br/>
+            </aside>
+
+          </section>
+
+          <section>
+            <pre><code class="data-trim">
+const today = new Date();
+console.log(today);
+// 2017-04-14T20:09:40.404Z
+const user = {name: "HG", created: today};
+console.log(user.created);
+// 2017-04-14T20:09:40.404Z
+today.setDate(34);
+console.log(today);
+// 2017-05-04T20:09:40.404Z
+console.log(user.created);
+// ...
+            </code></pre>
+
+            <aside class="notes">
+
+            </aside>
+
+          </section>
+
+                    <section>
+            <pre><code class="data-trim">
+console.log(user.created);
+// 2017-05-04T20:09:40.404Z
+            </code></pre>
+
+            <aside class="notes">
+
+            </aside>
+
+          </section>
+
+          <section>
+            <pre><code class="trim-data">
+date = Date.now
+Date.add(date, Time.to_timestamp(8, :days))
+
+date |> Date.add(Time.to_timestamp(8, :days))
+              </code></pre>
+          </section>
+
+          <section>
+            <h2>Broken state</h2>
+          </section>
+
+          <section>
+            <pre><code class="data-trim">
+class User {
+  constructor(name, weight, height) {
+    this._name = name;
+    this._weight = weight;
+    this._height = height;
+    this._bmiRequested = false;
+  }
+
+  calculateBmi(bmiCalculator) {
+    this._bmiRequested = true;
+    return bmiCalculator.calculate(this._weight, this._height);
+  }
+}
+
+class BmiCalculator {
+  calculate() {
+    throw new Error("I'm evil");
+  }
+}
+
+const u = new User("HG", 180, 47);
+
+console.log(u);
+
+try {
+  u.calculateBmi(new BmiCalculator());
+  // save user back to the db maybe...
+} catch (e) {
+  console.log(e);
+}
+
+console.log(u);
+            </code></pre>
+          </section>
+
+          <section>
+            <pre><code class="trim-data">
+User { _name: 'HG',
+  _weight: 180,
+  _height: 47,
+  _bmiRequested: false }
+
+Error: I'm evil
+
+User { _name: 'HG',
+  _weight: 180,
+  _height: 47,
+  _bmiRequested: true }
+            </code></pre>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h2>Caso <spen class="highlight">3:</spen> reliability</h2>
+            <p>Elixir, Erlang, OTP</p>
+            <small>Ejemplo: procesar data uploaded by users (large files).</small>
+
+            <aside class="notes">
+              OO, Akka, Quasar.<br/>
+              OTP viene incluido<br/>
+            </aside>
+          </section>
+
+          <section>
+            <img src="./sup-tree.png"/>
+          </section>
+        </section>
+
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				history: true,
+
+				// More info https://github.com/hakimel/reveal.js#dependencies
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				]
+			});
+		</script>
+	</body>
+</html>
