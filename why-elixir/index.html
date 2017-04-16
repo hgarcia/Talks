@@ -103,15 +103,15 @@
           <section>
             <pre><code class="data-trim">
 const today = new Date();
-console.log(today);
+print(today);
 // 2017-04-14T20:09:40.404Z
 const user = {name: "HG", created: today};
-console.log(user.created);
+print(user.created);
 // 2017-04-14T20:09:40.404Z
 today.setDate(34);
-console.log(today);
+print(today);
 // 2017-05-04T20:09:40.404Z
-console.log(user.created);
+print(user.created);
 // ...
             </code></pre>
 
@@ -123,7 +123,7 @@ console.log(user.created);
 
                     <section>
             <pre><code class="data-trim">
-console.log(user.created);
+print(user.created);
 // 2017-05-04T20:09:40.404Z
             </code></pre>
 
@@ -136,9 +136,42 @@ console.log(user.created);
           <section>
             <pre><code class="trim-data">
 date = Date.now
-Date.add(date, Time.to_timestamp(8, :days))
+date2 = Date.add(date, Time.to_timestamp(34, :days))
 
-date |> Date.add(Time.to_timestamp(8, :days))
+date2 = date |> Date.add(Time.to_timestamp(34, :days))
+
+print(date)
+# 2017-04-14T20:09:40.404Z
+
+print(date2)
+# 2017-05-04T20:09:40.404Z
+              </code></pre>
+          </section>
+
+          <section>
+            <pre><code class="trim-data">
+var movies = new List&lt;string&gt;({
+    "Rambo", "Krull", "Back to the future"
+  });
+movies.RemoveAt(2);
+
+print(movies);
+// "Rambo", "Krull"
+              </code></pre>
+          </section>
+
+          <section>
+            <pre><code class="trim-data">
+movies = ["Rambo", "Krull", "Back to the future"]
+movies2 = List.delete_at(movies, 2)
+
+movies2 = movies |> List.delete_at(2)
+
+print(movies);
+# "Rambo", "Krull", "Back to the future"
+
+print(movies2);
+# "Rambo", "Krull"
               </code></pre>
           </section>
 
@@ -170,16 +203,16 @@ class BmiCalculator {
 
 const u = new User("HG", 180, 47);
 
-console.log(u);
+print(u);
 
 try {
   u.calculateBmi(new BmiCalculator());
   // save user back to the db maybe...
 } catch (e) {
-  console.log(e);
+  print(e);
 }
 
-console.log(u);
+print(u);
             </code></pre>
           </section>
 
